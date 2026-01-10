@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% set title = "Travel Map — City suggestions" %}
+{% set active_page = "suggestions" %}
+{% set topbar_hint = "Trip similarity engine" %}
+
+{% block content %}
+  <div class="page-shell">
+    <div class="page-card">
+      <div class="suggestions-hero">
+        <div>
+          <div class="suggestions-kicker">Recommendations</div>
+          <h1 class="suggestions-title">City suggestions</h1>
+          <p class="suggestions-subtitle">
+            Based on your stored trips + planned countries.
+          </p>
+        </div>
+
+        <div class="suggestions-actions">
+          <button id="refreshSuggestions" class="btn btn-primary">Refresh</button>
+        </div>
+      </div>
+
+      <div id="suggestionsStatus" class="suggestions-status">Loading…</div>
+      <div id="suggestionsGrid" class="suggestions-grid"></div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block body_extra %}
+  <script src="{{ url_for('static', filename='js/suggestions.js') }}"></script>
+{% endblock %}

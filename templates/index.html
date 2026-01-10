@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+{% set title = "Travel Map — Home" %}
+{% set active_page = "home" %}
+{% set topbar_hint = "Map + trips" %}
+
+{% block head_extra %}
+  <!-- MapLibre -->
+  <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet"/>
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+
+  <!-- Tom Select -->
+  <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+{% endblock %}
+
+{% block content %}
+  <div class="app app-with-topbar">
+
+    <!-- ================= SIDEBAR ================= -->
+    <aside class="sidebar">
+      <div class="brand-side">
+        <div class="side-title">Home</div>
+        <div class="side-subtitle">Visited, planned, and trip memories</div>
+      </div>
+
+      <div class="sidebar-scroll">
+        <div class="panel">
+
+          <!-- VISITED -->
+          <div class="section">
+            <div class="section-header">
+              <div class="pill pill-red"></div>
+              <h2>Already travelled</h2>
+            </div>
+
+            <label class="label">Select countries</label>
+            <select id="visitedSelect" multiple></select>
+
+            <div class="selected-list">
+              <div class="selected-list-title">Selected</div>
+              <ul id="visitedList" class="list"></ul>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- PLANNED -->
+          <div class="section">
+            <div class="section-header">
+              <div class="pill pill-blue"></div>
+              <h2>Yet to explore</h2>
+            </div>
+
+            <label class="label">Select countries</label>
+            <select id="plannedSelect" multiple></select>
+
+            <div class="selected-list">
+              <div class="selected-list-title">Selected</div>
+              <ul id="plannedList" class="list"></ul>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="actions">
+            <button id="clearBtn" class="btn btn-ghost">Clear all</button>
+            <button id="swapBtn" class="btn btn-primary">Swap lists</button>
+          </div>
+
+          <p class="hint">If a country is in both lists, “Already travelled” takes priority.</p>
+
+          <div class="divider"></div>
+
+          <!-- ADD TRIP -->
+          <div class="section">
+            <div class="section-header">
+              <div class="pill pill-neutral"></div>
+              <h2>Add trip memory</h2>
+            </div>
+
+            <label class="label">Country</label>
+            <input id="tripCountry" class="text-input" placeholder="e.g. Spain" />
+
+            <div class="row2">
+              <div>
+                <label class="label">Start date</label>
+                <input id="tripStart" type="date" class="text-input" />
+              </div>
+              <div>
+                <label class="label">End date</label>
+                <input id="tripEnd" type="date" class="text-input" />
+              </div>
+            </div>
+
+            <label class="label">Cities (comma separated)</label>
+            <input id="tripCities" class="text-input" placeholder="Granada, Córdoba, Sevilla" />
+
+            <label class="label">With whom</label>
+            <input id="tripPeople" class="text-input" placeholder="Family, Ahmed, Sara" />
+
+            <label class="label">Notes</label>
+            <textarea id="tripNotes" class="text-area" placeholder="Highlights, food, memories…"></textarea>
+
+            <button id="addTripBtn" class="btn btn-primary full">Save trip</button>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- RECENT TRIPS -->
+          <div class="section">
+            <div class="section-header">
+              <div class="pill pill-neutral"></div>
+              <h2>Recent trips</h2>
+            </div>
+            <ul id="tripList" class="list list-clickable"></ul>
+          </div>
+
+        </div>
+      </div>
+    </aside>
+
+    <!-- ================= MAP ================= -->
+    <main class="main">
+      <div id="map" class="map"></div>
+
+      <div class="map-overlay">
+        <div class="legend">
+          <div class="legend-item"><span class="swatch swatch-red"></span> Already travelled</div>
+          <div class="legend-item"><span class="swatch swatch-blue"></span> Yet to explore</div>
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Trip Modal (unchanged) -->
+  <div id="tripModal" class="modal hidden" aria-hidden="true">
+    <div class="modal-backdrop" data-close="true"></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-header">
+        <div>
+          <div id="modalTitle" class="modal-title">Trip details</div>
+          <div id="modalSubtitle" class="modal-subtitle"></div>
+        </div>
+        <button id="modalCloseBtn" class="modal-close" aria-label="Close">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-grid">
+          <div class="modal-field">
+            <div class="modal-label">Country</div>
+            <div id="modalCountry" class="modal-value"></div>
+          </div>
+
+          <div class="modal-field">
+            <div class="modal-label">Dates</div>
+            <div id="modalDates" class="modal-value"></div>
+          </div>
+
+          <div class="modal-field">
+            <div class="modal-label">Cities</div>
+            <div id="modalCities" class="modal-value"></div>
+          </div>
+
+          <div class="modal-field">
+            <div class="modal-label">With</div>
+            <div id="modalPeople" class="modal-value"></div>
+          </div>
+
+          <div class="modal-field modal-field-full">
+            <div class="modal-label">Notes</div>
+            <div id="modalNotes" class="modal-notes"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button id="modalDeleteBtn" class="btn btn-danger">Delete trip</button>
+        <button id="modalOkBtn" class="btn btn-primary">Close</button>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block body_extra %}
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{{ title or "Travel Map" }}</title>
+
+  <!-- Shared CSS -->
+  <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet"/>
+
+  {% block head_extra %}{% endblock %}
+</head>
+<body>
+  <!-- Dynamic Island Top Bar -->
+  <header class="topbar" id="topbar">
+    <div class="topbar-pill" id="topbarPill">
+      <a class="topbar-brand" href="/">
+        <span class="brand-dot"></span>
+        <span class="brand-text">Travel Map</span>
+      </a>
+
+      <nav class="topbar-nav">
+        <a class="nav-item {% if active_page=='home' %}active{% endif %}" href="/">Home</a>
+        <a class="nav-item {% if active_page=='suggestions' %}active{% endif %}" href="/suggestions">City suggestions</a>
+      </nav>
+
+      <div class="topbar-slot">
+        <!-- Reserved space for future: search, profile, quick actions -->
+        <span class="topbar-hint">{{ topbar_hint or "" }}</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    {% block content %}{% endblock %}
+  </main>
+
+  <script src="{{ url_for('static', filename='js/ui.js') }}"></script>
+  {% block body_extra %}{% endblock %}
+</body>
+</html>
