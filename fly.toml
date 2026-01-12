@@ -1,21 +1,23 @@
-app = "112travel"
-primary_region = "lhr"
+# fly.toml app configuration file generated for 112travel on 2026-01-12T10:47:19Z
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = '112travel'
+primary_region = 'lhr'
 
 [build]
-builder = "paketobuildpacks/builder-jammy-full:latest"  # Keeps good support for numpy/sklearn
-
-[processes]
-app = "gunicorn --bind 0.0.0.0:$PORT --workers 2 app:app"  # Or your preferred Gunicorn command
 
 [http_service]
-  processes = ["app"]  # <-- This line fixes the error! Assigns the service to your "app" process group
   internal_port = 8080
   force_https = true
-  auto_stop_machines = true
+  auto_stop_machines = 'stop'
   auto_start_machines = true
   min_machines_running = 0
+  processes = ['app']
 
-  [http_service.concurrency]
-    type = "requests"
-    soft_limit = 20
-    hard_limit = 25
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
+  memory_mb = 1024
